@@ -7,8 +7,6 @@ import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
-import static edu.wpi.first.wpilibj.DoubleSolenoid.Value.*;
-
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
@@ -96,27 +94,26 @@ public class Robot extends TimedRobot {
 
 
       // Solenoids
-      // Stops pinch from opening while lift is up
-      if ((m_liftSolenoid.get() == kForward) && (m_pinchSolenoid.get() == kForward)); {
-        m_pinchSolenoid.set(Value.kReverse);
-      }
-      
       // Opens Double Solenoid Pinch
       if (m_driverController.getRawButton(5)) {
       m_pinchSolenoid.set(Value.kForward);
     }
       // Closes Double Solenoid Pinch
-      if (m_driverController.getRawButton(3)) {
+      else if (m_driverController.getRawButton(3)) {
        m_pinchSolenoid.set(Value.kReverse);
      }
       // Raises Single Solenoid Lift
-      if (m_driverController.getRawButton(1)) {
+      else if (m_driverController.getRawButton(1)) {
       m_liftSolenoid.set(Value.kReverse);
     }
       // Lowers Single Solenoid Lift
-      if (m_driverController.getRawButton(2)) {
+      else if (m_driverController.getRawButton(2)) {
       m_liftSolenoid.set(Value.kForward);
     }
+    // Stops pinch from opening while lift is up
+      else if ((m_liftSolenoid.get() == Value.kForward) && (m_pinchSolenoid.get() == Value.kForward)); {
+        m_pinchSolenoid.set(Value.kReverse);
+    }    
 
       // DriveTrain
     m_robotDrive.arcadeDrive(
