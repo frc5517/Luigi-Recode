@@ -1,7 +1,8 @@
 package frc.robot;
 
-  // Imports
+// Imports
 import edu.wpi.first.wpilibj.DoubleSolenoid;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
@@ -28,27 +29,67 @@ public class Robot extends TimedRobot {
   private final PWMVictorSPX m_rightMotor = new PWMVictorSPX(1);
   private final PWMVictorSPX m_leftMotor = new PWMVictorSPX(0);
   private final DifferentialDrive m_robotDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+
   
 
 
   @Override
+
 
   public void robotInit() {
     // Camera
     // Get Camera
     CameraServer.getInstance().startAutomaticCapture();
   
+  
     //Solenoids
     // Defaults Double Solenoid Pinch Closed
      m_pinchSolenoid.set(Value.kForward);
     // Defaults Single Solenoid Lift Up
      m_liftSolenoid.set(Value.kReverse);
-     
+
   }
 
     
 
   public void teleopPeriodic() {
+
+      // Get and make controllers
+    int opMode;
+    Joystick rightJoystick = new Joystick(0);
+    Joystick leftJoystick = new Joystick(1);
+    Joystick OperatorGamepad = new Joystick(3);
+    XboxController xboxController = new XboxController(0);
+    
+      // Flight sticks and PS controller
+    if (rightJoystick.isConnected() && !leftJoystick.isConnected() && !OperatorGamepad.isConnected()) {
+       opMode = 0;
+    } 
+      // Xbox controller and PS controller 
+    else if (OperatorGamepad.isConnected() && !xboxController.isConnected()) {
+      opMode = 1;
+    } 
+      // Single xbox controller
+    else if (xboxController.isConnected()) {
+      opMode = 2;
+    }
+    else {
+      opMode = 2;
+        }
+    
+   
+    boolean pinchOpen = true;
+    if (opMode == 0) {
+      pinchOpen = OperatorGamepad.getRawButton(5);
+    }
+    else if (opMode == 1) {
+      pinchOpen = OperatorGamepad.getRawButton(5);
+    }
+    else if (opMode == 2) {
+      pinchOpen = xboxController.getRawButton(5);
+    }
+    
+
 
       // Intake
       // Press both buttons and it does nothing
@@ -58,13 +99,13 @@ public class Robot extends TimedRobot {
     }
       // Intake In
     else if (m_driverController.getRawButton(6)) {
-      m_intakerightMotor.set(0.5);
-      m_intakekleftMotor.set(-0.5);
+      m_intakerightMotor.set(1);
+      m_intakekleftMotor.set(-1);
     }
       // Intake Out
     else if (m_driverController.getRawButton(4)) {
-      m_intakerightMotor.set(0.5);
-      m_intakekleftMotor.set(0.5);
+      m_intakerightMotor.set(-1);
+      m_intakekleftMotor.set(1);
     }
       // Intake Off
     else {
@@ -94,8 +135,12 @@ public class Robot extends TimedRobot {
 
 
       // Solenoids
+      // If pinch open button pressed while lift is up set pinch to close
+      if (m_driverController.getRawButton(5) && (m_liftSolenoid.get() == Value.kForward))
+      m_liftSolenoid.set(Value.kForward);
+
       // Opens Double Solenoid Pinch
-      if (m_driverController.getRawButton(5)) {
+      else if (pinchOpen) {
       m_pinchSolenoid.set(Value.kForward);
     }
       // Closes Double Solenoid Pinch
@@ -103,17 +148,13 @@ public class Robot extends TimedRobot {
        m_pinchSolenoid.set(Value.kReverse);
      }
       // Raises Single Solenoid Lift
-      else if (m_driverController.getRawButton(1)) {
+      if (m_driverController.getRawButton(1)) {
       m_liftSolenoid.set(Value.kReverse);
     }
       // Lowers Single Solenoid Lift
       else if (m_driverController.getRawButton(2)) {
       m_liftSolenoid.set(Value.kForward);
     }
-    // Stops pinch from opening while lift is up
-      else if ((m_liftSolenoid.get() == Value.kForward) && (m_pinchSolenoid.get() == Value.kForward)); {
-        m_pinchSolenoid.set(Value.kReverse);
-    }    
 
       // DriveTrain
     m_robotDrive.arcadeDrive(
