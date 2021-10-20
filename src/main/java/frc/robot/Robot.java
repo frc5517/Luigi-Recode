@@ -4,7 +4,6 @@ package frc.robot;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.GenericHID.Hand;
 import edu.wpi.first.wpilibj.PWMVictorSPX;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
@@ -14,8 +13,6 @@ import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 
 
 public class Robot extends TimedRobot {
-  // Input
-  private final XboxController m_driverController = new XboxController(0);
   // Intake
   private final PWMVictorSPX m_intakerightMotor = new PWMVictorSPX(5);
   private final PWMVictorSPX m_intakekleftMotor = new PWMVictorSPX(4);
@@ -55,55 +52,188 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
       // Get and make controllers
-    int opMode;
-    Joystick rightJoystick = new Joystick(0);
+    int controlMode;
+    XboxController xboxController = new XboxController(1);
+    Joystick rightJoystick = new Joystick(2);
     Joystick leftJoystick = new Joystick(1);
-    Joystick OperatorGamepad = new Joystick(3);
-    XboxController xboxController = new XboxController(0);
+    Joystick psController = new Joystick(0);
     
-      // Flight sticks and PS controller
-    if (rightJoystick.isConnected() && !leftJoystick.isConnected() && !OperatorGamepad.isConnected()) {
-       opMode = 0;
+    if (rightJoystick.isConnected() && leftJoystick.isConnected() && psController.isConnected()) {
+       controlMode = 0;
     } 
-      // Xbox controller and PS controller 
-    else if (OperatorGamepad.isConnected() && !xboxController.isConnected()) {
-      opMode = 1;
+    else if (xboxController.isConnected() && psController.isConnected()) {
+      controlMode = 1;
     } 
-      // Single xbox controller
     else if (xboxController.isConnected()) {
-      opMode = 2;
+      controlMode = 2;
     }
     else {
-      opMode = 2;
+      controlMode = 5;
         }
-    
-   
-    boolean pinchOpen = true;
-    if (opMode == 0) {
-      pinchOpen = OperatorGamepad.getRawButton(5);
-    }
-    else if (opMode == 1) {
-      pinchOpen = OperatorGamepad.getRawButton(5);
-    }
-    else if (opMode == 2) {
-      pinchOpen = xboxController.getRawButton(5);
-    }
-    
 
+      // Pinch open
+        boolean pinchOpen = true;
+    if (controlMode == 0) {
+          pinchOpen = psController.getRawButton(5);
+        } 
+    else if (controlMode == 1) {
+          pinchOpen = psController.getRawButton(5);
+    }
+    else if (controlMode == 2) {
+          pinchOpen = xboxController.getRawButton(5);
+        }
+    else if (controlMode == 5) {
+          pinchOpen = false;
+        }
+
+      // Pinch close
+        boolean pinchClose = true;
+    if (controlMode == 0) {
+      pinchClose = psController.getRawButton(3);
+    }
+    else if (controlMode == 1) {
+      pinchClose = psController.getRawButton(3);
+    }
+    else if (controlMode == 2) {
+      pinchClose = xboxController.getRawButton(3);
+    }
+    else if (controlMode == 5) {
+      pinchClose = false;
+    }
+
+      // Intake in
+        Boolean IntakeIn = true;
+    if (controlMode == 0) {
+      IntakeIn = psController.getRawButton(6);
+    }
+    else if (controlMode == 1) {
+      IntakeIn = psController.getRawButton(6);
+    }
+    else if (controlMode == 2) {
+      IntakeIn = xboxController.getRawButton(6);
+    }
+    else if (controlMode == 5) {
+      IntakeIn = false;
+    }
+
+      // Intake out
+    Boolean IntakeOut = true;
+    if (controlMode == 0) {
+      IntakeOut = psController.getRawButton(4);
+    }
+    else if (controlMode == 1) {
+      IntakeOut = psController.getRawButton(4);
+    }
+    else if (controlMode == 2) {
+      IntakeOut = xboxController.getRawButton(4);
+    }
+    else if (controlMode == 5) {
+      IntakeOut = false;
+    }
+
+      // Elevator up
+    Boolean ElevatorUp = true;
+    if (controlMode == 0) {
+      ElevatorUp = psController.getRawButton(8);
+    }
+    else if (controlMode == 1) {
+      ElevatorUp = xboxController.getRawButton(8);
+    }
+    else if (controlMode == 2) {
+      ElevatorUp = xboxController.getRawButton(8);
+    }
+    else if (controlMode == 5) {
+      ElevatorUp = false;
+    }
+    
+      // Elevator down
+    Boolean ElevatorDown = true;
+    if (controlMode == 0) {
+      ElevatorDown = psController.getRawButton(7);
+    }
+    else if (controlMode == 1) {
+      ElevatorDown = xboxController.getRawButton(7);
+    }
+    else if (controlMode == 2) {
+      ElevatorDown = xboxController.getRawButton(7);
+    }
+    else if (controlMode == 5) {
+      ElevatorDown = false;
+    }
+
+      // Solenoid up
+    Boolean SolenoidUp = true;
+    if (controlMode == 0) {
+      SolenoidUp = psController.getRawButton(1);
+    }
+    else if (controlMode == 1) {
+      SolenoidUp = psController.getRawButton(1);
+    }
+    else if (controlMode == 2) {
+      SolenoidUp = xboxController.getRawButton(1);
+    }
+    else if (controlMode == 5) {
+      SolenoidUp = false;
+    }
+
+      // Solenoid down
+    Boolean SolenoidDown = true;
+    if (controlMode == 0) {
+      SolenoidUp = psController.getRawButton(2);
+    }
+    else if (controlMode == 1) {
+      SolenoidDown = psController.getRawButton(2);
+    }
+    else if (controlMode == 2) {
+      SolenoidDown = xboxController.getRawButton(2);
+    }
+    else if (controlMode == 5) {
+      SolenoidDown = false;
+    }
+
+      // Drive Train Y axis
+    double driveY = 1;
+    if (controlMode == 0) {
+      driveY = leftJoystick.getRawAxis(1);
+    }
+    else if (controlMode == 1) {
+      driveY = xboxController.getRawAxis(1);
+    }
+    else if (controlMode == 2) {
+      driveY = xboxController.getRawAxis(1);
+    }
+    else if (controlMode == 5) {
+      driveY = 0;
+    }
+
+      // Drive Train X axis
+    double driveX = 1;
+    if (controlMode == 0) {
+      driveX = rightJoystick.getRawAxis(4);
+    }
+    else if (controlMode == 1) {
+      driveX = xboxController.getRawAxis(4);
+    }
+    else if (controlMode == 2) {
+      driveX = xboxController.getRawAxis(4);
+    }
+    else if (controlMode == 5) {
+      driveX = 0;
+    }
 
       // Intake
       // Press both buttons and it does nothing
-    if (m_driverController.getRawButton(6) && m_driverController.getRawButton(4)) {
+    if (IntakeIn && IntakeOut) {
       m_intakerightMotor.set(0);
       m_intakekleftMotor.set(0);
     }
       // Intake In
-    else if (m_driverController.getRawButton(6)) {
+    else if (IntakeIn) {
       m_intakerightMotor.set(1);
       m_intakekleftMotor.set(-1);
     }
       // Intake Out
-    else if (m_driverController.getRawButton(4)) {
+    else if (IntakeOut) {
       m_intakerightMotor.set(-1);
       m_intakekleftMotor.set(1);
     }
@@ -115,16 +245,16 @@ public class Robot extends TimedRobot {
 
       // Elevator
       // Press both buttons do nothing
-      if (m_driverController.getRawButton(8) && (m_driverController.getRawButton(9))) {
+      if (ElevatorUp && ElevatorDown) {
         m_elevatorrightMotor.set(0);
         m_intakekleftMotor.set(0);
       }
       // Start Elevator Up
-      else if (m_driverController.getRawButton(8)) {
+      else if (ElevatorUp) {
         m_elevatorrightMotor.set(1);
       }
       // Select Elevator Down
-      else if (m_driverController.getRawButton(7)) {
+      else if (ElevatorDown) {
         m_elevatorleftMotor.set(1);
       }
       // Do Nothing
@@ -136,29 +266,28 @@ public class Robot extends TimedRobot {
 
       // Solenoids
       // If pinch open button pressed while lift is up set pinch to close
-      if (m_driverController.getRawButton(5) && (m_liftSolenoid.get() == Value.kForward))
+      if (pinchOpen && (m_liftSolenoid.get() == Value.kForward))
       m_liftSolenoid.set(Value.kForward);
 
-      // Opens Double Solenoid Pinch
-      else if (pinchOpen) {
-      m_pinchSolenoid.set(Value.kForward);
-    }
-      // Closes Double Solenoid Pinch
-      else if (m_driverController.getRawButton(3)) {
-       m_pinchSolenoid.set(Value.kReverse);
-     }
+      if (pinchOpen) {
+        m_pinchSolenoid.set(Value.kForward);
+    } 
+      if (pinchClose) {
+        m_pinchSolenoid.set(Value.kReverse);
+      }
+     
+
       // Raises Single Solenoid Lift
-      if (m_driverController.getRawButton(1)) {
+      if (SolenoidUp) {
       m_liftSolenoid.set(Value.kReverse);
     }
       // Lowers Single Solenoid Lift
-      else if (m_driverController.getRawButton(2)) {
+      else if (SolenoidDown) {
       m_liftSolenoid.set(Value.kForward);
     }
 
       // DriveTrain
-    m_robotDrive.arcadeDrive(
-        m_driverController.getY(Hand.kLeft), m_driverController.getX(Hand.kRight));
+    m_robotDrive.arcadeDrive(driveY, driveX);
   }
 
 }
