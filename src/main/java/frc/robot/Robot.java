@@ -266,8 +266,8 @@ public class Robot extends TimedRobot {
 
       // Solenoids
       // If pinch open button pressed while lift is up set pinch to close
-      if (pinchOpen && (m_liftSolenoid.get() == Value.kForward))
-      m_liftSolenoid.set(Value.kForward);
+      if (SolenoidDown && (m_pinchSolenoid.get() == Value.kForward))
+      m_pinchSolenoid.set(Value.kReverse);
 
       if (pinchOpen) {
         m_pinchSolenoid.set(Value.kForward);
