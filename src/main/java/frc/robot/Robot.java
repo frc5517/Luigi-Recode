@@ -3,8 +3,9 @@ package frc.robot;
 // Imports
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.PWMVictorSPX;
+import edu.wpi.first.wpilibj.motorcontrol.PWMVictorSPX;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
@@ -20,8 +21,8 @@ public class Robot extends TimedRobot {
   private final PWMVictorSPX m_elevatorrightMotor = new PWMVictorSPX(3);
   private final PWMVictorSPX m_elevatorleftMotor = new PWMVictorSPX(2);
   // Solenoid
-  private final DoubleSolenoid m_liftSolenoid = new DoubleSolenoid(4, 7);
-  private final DoubleSolenoid m_pinchSolenoid = new DoubleSolenoid(1, 6);
+  private final DoubleSolenoid m_liftSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 4, 7);
+  private final DoubleSolenoid m_pinchSolenoid = new DoubleSolenoid(PneumaticsModuleType.REVPH, 1, 6);
   // DriveTrain
   private final PWMVictorSPX m_rightMotor = new PWMVictorSPX(1);
   private final PWMVictorSPX m_leftMotor = new PWMVictorSPX(0);
@@ -36,7 +37,7 @@ public class Robot extends TimedRobot {
   public void robotInit() {
     // Camera
     // Get Camera
-    CameraServer.getInstance().startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
   
   
     //Solenoids
